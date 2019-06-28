@@ -19,11 +19,10 @@
 int conteo1=1;
 int conteo2=1;
 int conteo3=1;
+int conteo4=1;
 int contador100=0;
 int contador300=0;
 int contador500=0;
-
-
 void isr_rda(void){
     
 }
@@ -75,5 +74,7 @@ while(1){
       conteo3=1;
      }
      output_d(conteo3);
+    
+    
     }
 }
