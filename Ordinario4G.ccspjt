@@ -1,0 +1,16 @@
+[PROJECT]
+Target=Ordinario4G.hex
+Processor_Text=PIC18F4620
+CCSVersion=5.012
+Compiler=PCH
+[Target Data]
+FileList=Ordinario4G.c
+[Directories]
+Include=C:\Program Files (x86)\PICC\Devices\;C:\Program Files (x86)\PICC\Drivers\
+[Ordinario4G.c]
+Type=4
+[mru-list]
+1=Ordinario4G.c
+[Units]
+Count=1
+1=Ordinario4G (main)
