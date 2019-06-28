@@ -22,7 +22,7 @@
 
 char buffer[maxSizeBuffer];
 char CaracterRecibido;
-int16 flagserial, flagenter, flagmostrar,flagseparador, indiceBuffer=0;
+int16 flagserial, flagenter, flagmostrar, indiceBuffer=0;
 int conteo1=1;
 int conteo2=1;
 int conteo3=1;
@@ -60,7 +60,7 @@ void timer_0()
 }
 void main(void){
 //enable interrupciones
-     setup_timer_0(RTCC_INTERNAL | RTCC_DIV_32);
+     setup_timer_0(RTCC_INTERNAL | RTCC_DIV_8);
      set_timer0(65217);
      enable_interrupts(int_timer0);
      enable_interrupts(INT_RDA);
@@ -78,16 +78,15 @@ while(1){
     //caracter entre separadores
      if(flagserial == verdadero) 
       {
-         putc(CaracterRecibido);
+         //putc(CaracterRecibido);
          flagserial = falso;
          if(flagmostrar == verdadero && flagenter == verdadero)
          {
             flagmostrar = falso;
             flagenter = falso;
             for (char i = 1; i < indiceBuffer-2; i++) 
-            {           
-                
-               //printf("%c",buffer[i]);
+            {
+               printf("%c",buffer[i]);
             }        
          }
       }

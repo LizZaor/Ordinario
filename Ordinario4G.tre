@@ -1,4 +1,6 @@
 ÀÄOrdinario4G
-   ÃÄMAIN  0/170  Ram=0
-   ³  ÀÄ@cinit1  (Inline)  Ram=0
+   ÃÄMAIN  0/262  Ram=0
+   ³  ÃÄ@cinit1  (Inline)  Ram=0
+   ³  ÀÄ@PUTCHARI_BIU_1  0/10  Ram=0
+   ÃÄisr_rda  0/144  Ram=3
    ÀÄtimer_0  0/20  Ram=0

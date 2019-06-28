@@ -1,16 +1,16 @@
-CCS PCH C Compiler, Version 5.012, 41559               28-jun.-19 13:08
+CCS PCH C Compiler, Version 5.012, 41559               28-jun.-19 13:55
 
                Filename:   C:\Users\L-L-Z\OneDrive\Desktop\Zamora Orozco Lourdes Lizbeth\Ordinario4G.lst
 
-               ROM used:   336 bytes (1%)
-                           Largest free fragment is 65196
-               RAM used:   34 (1%) at main() level
-                           34 (1%) worst case
-               Stack used: 1 locations (0 in main + 1 for interrupts)
+               ROM used:   594 bytes (1%)
+                           Largest free fragment is 64938
+               RAM used:   75 (2%) at main() level
+                           79 (2%) worst case
+               Stack used: 2 locations (1 in main + 1 for interrupts)
                Stack size: 31
 
 *
-00000:  GOTO   00AA
+00000:  GOTO   0150
 *
 00008:  MOVWF  04
 0000A:  MOVFF  FD8,05
@@ -32,25 +32,29 @@ CCS PCH C Compiler, Version 5.012, 41559               28-jun.-19 13:08
 00048:  BTFSS  FF2.5
 0004A:  GOTO   0054
 0004E:  BTFSC  FF2.2
-00050:  GOTO   0096
-00054:  MOVFF  0E,00
-00058:  MOVFF  0F,01
-0005C:  MOVFF  10,02
-00060:  MOVFF  11,03
-00064:  MOVFF  0C,FE9
-00068:  MOVFF  07,FEA
-0006C:  BSF    07.7
-0006E:  MOVFF  08,FE1
-00072:  MOVFF  09,FE2
-00076:  MOVFF  0A,FD9
-0007A:  MOVFF  0B,FDA
-0007E:  MOVFF  12,FF3
-00082:  MOVFF  13,FF4
-00086:  MOVFF  14,FFA
-0008A:  MOVF   04,W
-0008C:  MOVFF  06,FE0
-00090:  MOVFF  05,FD8
-00094:  RETFIE 0
+00050:  GOTO   0132
+00054:  BTFSS  F9D.5
+00056:  GOTO   0060
+0005A:  BTFSC  F9E.5
+0005C:  GOTO   00A2
+00060:  MOVFF  0E,00
+00064:  MOVFF  0F,01
+00068:  MOVFF  10,02
+0006C:  MOVFF  11,03
+00070:  MOVFF  0C,FE9
+00074:  MOVFF  07,FEA
+00078:  BSF    07.7
+0007A:  MOVFF  08,FE1
+0007E:  MOVFF  09,FE2
+00082:  MOVFF  0A,FD9
+00086:  MOVFF  0B,FDA
+0008A:  MOVFF  12,FF3
+0008E:  MOVFF  13,FF4
+00092:  MOVFF  14,FFA
+00096:  MOVF   04,W
+00098:  MOVFF  06,FE0
+0009C:  MOVFF  05,FD8
+000A0:  RETFIE 0
 .................... #include <18F4620.h> 
 .................... ///////////// Standard Header file for the PIC18F4620 device //////////////// 
 .................... /////////////////////////////////////////////////////////////////////////// 
@@ -2426,6 +2430,10 @@ CCS PCH C Compiler, Version 5.012, 41559               28-jun.-19 13:08
 .................... #endif 
 .................... #endif 
 ....................  
+.................... #define verdadero 1 
+.................... #define falso 0 
+.................... #define maxSizeBuffer 30 
+.................... #define comienza 0 
 ....................  
 .................... #fuses HS, NOFCMEN, NOIESO, PUT, NOBROWNOUT, NOWDT 
 .................... #fuses NOPBADEN, NOMCLR, STVREN, NOLVP, NODEBUG 
@@ -2437,10 +2445,18 @@ CCS PCH C Compiler, Version 5.012, 41559               28-jun.-19 13:08
 ....................    #define TX_232        PIN_C6 
 ....................    #define RX_232        PIN_C7 
 ....................    #use RS232(BAUD=9600, XMIT=TX_232, BITS=8,PARITY=N, STOP=1,UART1,RCV=RX_232) 
+*
+00146:  BTFSS  F9E.4
+00148:  BRA    0146
+0014A:  MOVWF  FAD
+0014C:  GOTO   01C2 (RETURN)
 ....................    #use fast_io(c) 
 .................... #endif  
-.................... #int_rda 
 ....................  
+....................  
+.................... char buffer[maxSizeBuffer]; 
+.................... char CaracterRecibido; 
+.................... int16 flagserial, flagenter, flagmostrar,flagseparador, indiceBuffer=0; 
 .................... int conteo1=1; 
 .................... int conteo2=1; 
 .................... int conteo3=1; 
@@ -2448,151 +2464,306 @@ CCS PCH C Compiler, Version 5.012, 41559               28-jun.-19 13:08
 .................... int contador300=0; 
 .................... int contador500=0; 
 ....................  
-....................  
+.................... #int_rda 
 .................... void isr_rda(void){ 
-....................      
+....................    CaracterRecibido=getc(); 
+*
+000A2:  BTFSS  F9E.5
+000A4:  BRA    00A2
+000A6:  MOVFF  FAE,3A
+....................    flagserial=verdadero;  
+000AA:  CLRF   3C
+000AC:  MOVLW  01
+000AE:  MOVWF  3B
+....................    buffer[indiceBuffer] = getc(); 
+000B0:  MOVLW  1C
+000B2:  ADDWF  43,W
+000B4:  MOVWF  FE9
+000B6:  MOVLW  00
+000B8:  ADDWFC 44,W
+000BA:  MOVWF  FEA
+000BC:  BTFSS  F9E.5
+000BE:  BRA    00BC
+000C0:  MOVFF  FAE,FEF
+....................    indiceBuffer++; 
+000C4:  INCF   43,F
+000C6:  BTFSC  FD8.2
+000C8:  INCF   44,F
+....................    flagserial = verdadero; 
+000CA:  CLRF   3C
+000CC:  MOVLW  01
+000CE:  MOVWF  3B
+....................    if (indiceBuffer == maxSizeBuffer) 
+000D0:  MOVF   43,W
+000D2:  SUBLW  1E
+000D4:  BNZ   00DE
+000D6:  MOVF   44,F
+000D8:  BNZ   00DE
+....................    { 
+....................       indiceBuffer = 0; 
+000DA:  CLRF   44
+000DC:  CLRF   43
+....................    } 
+....................    if(buffer[comienza] == 0x3C && buffer[indiceBuffer-2] == 0x3E) 
+000DE:  MOVF   1C,W
+000E0:  SUBLW  3C
+000E2:  BNZ   0108
+000E4:  MOVLW  02
+000E6:  SUBWF  43,W
+000E8:  MOVWF  4C
+000EA:  MOVLW  00
+000EC:  SUBWFB 44,W
+000EE:  MOVWF  4D
+000F0:  MOVLW  1C
+000F2:  ADDWF  4C,W
+000F4:  MOVWF  FE9
+000F6:  MOVLW  00
+000F8:  ADDWFC 4D,W
+000FA:  MOVWF  FEA
+000FC:  MOVF   FEF,W
+000FE:  SUBLW  3E
+00100:  BNZ   0108
+....................    { 
+....................       flagmostrar = verdadero; 
+00102:  CLRF   40
+00104:  MOVLW  01
+00106:  MOVWF  3F
+....................    } 
+....................    if(buffer[indiceBuffer-1]==13) 
+00108:  MOVLW  01
+0010A:  SUBWF  43,W
+0010C:  MOVWF  4C
+0010E:  MOVLW  00
+00110:  SUBWFB 44,W
+00112:  MOVWF  4D
+00114:  MOVLW  1C
+00116:  ADDWF  4C,W
+00118:  MOVWF  FE9
+0011A:  MOVLW  00
+0011C:  ADDWFC 4D,W
+0011E:  MOVWF  FEA
+00120:  MOVF   FEF,W
+00122:  SUBLW  0D
+00124:  BNZ   012C
+....................    { 
+....................       flagenter = verdadero; 
+00126:  CLRF   3E
+00128:  MOVLW  01
+0012A:  MOVWF  3D
+....................    } 
 .................... } 
+0012C:  BCF    F9E.5
+0012E:  GOTO   0060
 .................... #int_timer0 
 .................... void timer_0() 
 .................... {  
 ....................     set_timer0(65217); 
-00096:  MOVLW  FE
-00098:  MOVWF  FD7
-0009A:  MOVLW  C1
-0009C:  MOVWF  FD6
+00132:  MOVLW  FE
+00134:  MOVWF  FD7
+00136:  MOVLW  C1
+00138:  MOVWF  FD6
 ....................     contador100++; 
-0009E:  INCF   1F,F
+0013A:  INCF   48,F
 ....................     contador300++; 
-000A0:  INCF   20,F
+0013C:  INCF   49,F
 ....................     contador500++; 
-000A2:  INCF   21,F
-000A4:  BCF    FF2.2
-000A6:  GOTO   0054
+0013E:  INCF   4A,F
+00140:  BCF    FF2.2
+00142:  GOTO   0060
 .................... } 
 .................... void main(void){ 
-000AA:  CLRF   FF8
-000AC:  BCF    FD0.7
-000AE:  BSF    07.7
-000B0:  BSF    FB8.3
-000B2:  MOVLW  A0
-000B4:  MOVWF  FAF
-000B6:  MOVLW  01
-000B8:  MOVWF  FB0
-000BA:  MOVLW  A6
-000BC:  MOVWF  FAC
-000BE:  MOVLW  90
-000C0:  MOVWF  FAB
-000C2:  MOVLW  01
-000C4:  MOVWF  1C
-000C6:  MOVWF  1D
-000C8:  MOVWF  1E
-000CA:  CLRF   1F
-000CC:  CLRF   20
-000CE:  CLRF   21
-000D0:  MOVF   FC1,W
-000D2:  ANDLW  C0
-000D4:  IORLW  0F
-000D6:  MOVWF  FC1
-000D8:  MOVLW  07
-000DA:  MOVWF  FB4
-000DC:  CLRF   16
-000DE:  CLRF   17
-....................      setup_timer_0(RTCC_INTERNAL | RTCC_DIV_8); 
-000E0:  MOVLW  82
-000E2:  MOVWF  FD5
+*
+00150:  CLRF   FF8
+00152:  BCF    FD0.7
+00154:  BSF    07.7
+00156:  BSF    FB8.3
+00158:  MOVLW  A0
+0015A:  MOVWF  FAF
+0015C:  MOVLW  01
+0015E:  MOVWF  FB0
+00160:  MOVLW  A6
+00162:  MOVWF  FAC
+00164:  MOVLW  90
+00166:  MOVWF  FAB
+00168:  CLRF   44
+0016A:  CLRF   43
+0016C:  MOVLW  01
+0016E:  MOVWF  45
+00170:  MOVWF  46
+00172:  MOVWF  47
+00174:  CLRF   48
+00176:  CLRF   49
+00178:  CLRF   4A
+0017A:  MOVF   FC1,W
+0017C:  ANDLW  C0
+0017E:  IORLW  0F
+00180:  MOVWF  FC1
+00182:  MOVLW  07
+00184:  MOVWF  FB4
+00186:  CLRF   16
+00188:  CLRF   17
+.................... //enable interrupciones 
+....................      setup_timer_0(RTCC_INTERNAL | RTCC_DIV_32); 
+0018A:  MOVLW  84
+0018C:  MOVWF  FD5
 ....................      set_timer0(65217); 
-000E4:  MOVLW  FE
-000E6:  MOVWF  FD7
-000E8:  MOVLW  C1
-000EA:  MOVWF  FD6
+0018E:  MOVLW  FE
+00190:  MOVWF  FD7
+00192:  MOVLW  C1
+00194:  MOVWF  FD6
 ....................      enable_interrupts(int_timer0); 
-000EC:  BSF    FF2.5
+00196:  BSF    FF2.5
+....................      enable_interrupts(INT_RDA); 
+00198:  BSF    F9D.5
 ....................      enable_interrupts(global); 
-000EE:  MOVLW  C0
-000F0:  IORWF  FF2,F
+0019A:  MOVLW  C0
+0019C:  IORWF  FF2,F
 ....................       
 ....................     output_a(0x0);    
-000F2:  CLRF   F92
-000F4:  CLRF   F89
+0019E:  CLRF   F92
+001A0:  CLRF   F89
 ....................     output_b(0x0);      
-000F6:  CLRF   F93
-000F8:  CLRF   F8A
+001A2:  CLRF   F93
+001A4:  CLRF   F8A
 ....................     output_d(0x0); 
-000FA:  CLRF   F95
-000FC:  CLRF   F8C
+001A6:  CLRF   F95
+001A8:  CLRF   F8C
+....................     set_tris_a(0x00); 
+001AA:  MOVLW  00
+001AC:  MOVWF  F92
+....................    set_tris_b(0x00); 
+001AE:  MOVWF  F93
+....................    set_tris_d(0x00); 
+001B0:  MOVWF  F95
+....................      
 .................... while(1){ 
+....................   set_tris_c(0x80); 
+001B2:  MOVLW  80
+001B4:  MOVWF  F94
+....................     //caracter entre separadores 
+....................      if(flagserial == verdadero)  
+001B6:  DECFSZ 3B,W
+001B8:  BRA    0200
+001BA:  MOVF   3C,F
+001BC:  BNZ   0200
+....................       { 
+....................          putc(CaracterRecibido); 
+001BE:  MOVF   3A,W
+001C0:  BRA    0146
+....................          flagserial = falso; 
+001C2:  CLRF   3C
+001C4:  CLRF   3B
+....................          if(flagmostrar == verdadero && flagenter == verdadero) 
+001C6:  DECFSZ 3F,W
+001C8:  BRA    0200
+001CA:  MOVF   40,F
+001CC:  BNZ   0200
+001CE:  DECFSZ 3D,W
+001D0:  BRA    0200
+001D2:  MOVF   3E,F
+001D4:  BNZ   0200
+....................          { 
+....................             flagmostrar = falso; 
+001D6:  CLRF   40
+001D8:  CLRF   3F
+....................             flagenter = falso; 
+001DA:  CLRF   3E
+001DC:  CLRF   3D
+....................             for (char i = 1; i < indiceBuffer-2; i++)  
+001DE:  MOVLW  01
+001E0:  MOVWF  4B
+001E2:  MOVLW  02
+001E4:  SUBWF  43,W
+001E6:  MOVWF  00
+001E8:  MOVLW  00
+001EA:  SUBWFB 44,W
+001EC:  MOVWF  03
+001EE:  MOVFF  00,01
+001F2:  MOVF   03,F
+001F4:  BNZ   01FC
+001F6:  MOVF   01,W
+001F8:  SUBWF  4B,W
+001FA:  BC    0200
+....................             {            
+001FC:  INCF   4B,F
+001FE:  BRA    01E2
+....................                  
+....................                //printf("%c",buffer[i]); 
+....................             }         
+....................          } 
+....................       } 
 ....................     //contador 1 (100hzs) 
 ....................     if(contador100==1){ 
-000FE:  DECFSZ 1F,W
-00100:  BRA    0108
+00200:  DECFSZ 48,W
+00202:  BRA    020A
 ....................          conteo1*=2;    
-00102:  BCF    FD8.0
-00104:  RLCF   1C,F
+00204:  BCF    FD8.0
+00206:  RLCF   45,F
 ....................          contador100=0; 
-00106:  CLRF   1F
+00208:  CLRF   48
 ....................       }   
 ....................      if(conteo1==64){ 
-00108:  MOVF   1C,W
-0010A:  SUBLW  40
-0010C:  BNZ   0112
+0020A:  MOVF   45,W
+0020C:  SUBLW  40
+0020E:  BNZ   0214
 ....................       conteo1=1; 
-0010E:  MOVLW  01
-00110:  MOVWF  1C
+00210:  MOVLW  01
+00212:  MOVWF  45
 ....................      } 
 ....................      output_a(conteo1); 
-00112:  CLRF   F92
-00114:  MOVFF  1C,F89
+00214:  CLRF   F92
+00216:  MOVFF  45,F89
 ....................       
 ....................     //contador 2 (400ms) 
 ....................     if(contador300==3){ 
-00118:  MOVF   20,W
-0011A:  SUBLW  03
-0011C:  BNZ   0124
+0021A:  MOVF   49,W
+0021C:  SUBLW  03
+0021E:  BNZ   0226
 ....................          conteo2*=2;    
-0011E:  BCF    FD8.0
-00120:  RLCF   1D,F
+00220:  BCF    FD8.0
+00222:  RLCF   46,F
 ....................          contador300=0; 
-00122:  CLRF   20
+00224:  CLRF   49
 ....................       } 
 ....................     
 ....................      if(conteo2==256){ 
-00124:  MOVF   1D,W
-00126:  SUBLW  00
-00128:  BNZ   012E
+00226:  MOVF   46,W
+00228:  SUBLW  00
+0022A:  BNZ   0230
 ....................       conteo2=1; 
-0012A:  MOVLW  01
-0012C:  MOVWF  1D
+0022C:  MOVLW  01
+0022E:  MOVWF  46
 ....................      } 
 ....................      output_b(conteo2); 
-0012E:  CLRF   F93
-00130:  MOVFF  1D,F8A
+00230:  CLRF   F93
+00232:  MOVFF  46,F8A
 ....................      
 ....................       //contador 3  (700ms) 
 ....................        if(contador500==5){ 
-00134:  MOVF   21,W
-00136:  SUBLW  05
-00138:  BNZ   0140
+00236:  MOVF   4A,W
+00238:  SUBLW  05
+0023A:  BNZ   0242
 ....................          conteo3*=2;    
-0013A:  BCF    FD8.0
-0013C:  RLCF   1E,F
+0023C:  BCF    FD8.0
+0023E:  RLCF   47,F
 ....................          contador500= 0; 
-0013E:  CLRF   21
+00240:  CLRF   4A
 ....................       } 
 ....................      if(conteo3 ==256){ 
-00140:  MOVF   1E,W
-00142:  SUBLW  00
-00144:  BNZ   014A
+00242:  MOVF   47,W
+00244:  SUBLW  00
+00246:  BNZ   024C
 ....................       conteo3=1; 
-00146:  MOVLW  01
-00148:  MOVWF  1E
+00248:  MOVLW  01
+0024A:  MOVWF  47
 ....................      } 
 ....................      output_d(conteo3); 
-0014A:  CLRF   F95
-0014C:  MOVFF  1E,F8C
-00150:  BRA    00FE
+0024C:  CLRF   F95
+0024E:  MOVFF  47,F8C
+00252:  BRA    01B2
 ....................     } 
 .................... } 
-00152:  SLEEP 
+00254:  SLEEP 
 
 Configuration Fuses:
    Word  1: 0200   HS NOFCMEN NOIESO

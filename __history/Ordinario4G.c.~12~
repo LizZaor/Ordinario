@@ -18,11 +18,11 @@
    #use RS232(BAUD=9600, XMIT=TX_232, BITS=8,PARITY=N, STOP=1,UART1,RCV=RX_232)
    #use fast_io(c)
 #endif 
-
+#int_rda
 
 char buffer[maxSizeBuffer];
 char CaracterRecibido;
-int16 flagserial, flagenter, flagmostrar,flagseparador, indiceBuffer=0;
+int16 flagserial, flagenter, flagmostrar, indiceBuffer=0;
 int conteo1=1;
 int conteo2=1;
 int conteo3=1;
@@ -30,7 +30,7 @@ int contador100=0;
 int contador300=0;
 int contador500=0;
 
-#int_rda
+
 void isr_rda(void){
    CaracterRecibido=getc();
    flagserial=verdadero; 
@@ -60,7 +60,7 @@ void timer_0()
 }
 void main(void){
 //enable interrupciones
-     setup_timer_0(RTCC_INTERNAL | RTCC_DIV_32);
+     setup_timer_0(RTCC_INTERNAL | RTCC_DIV_8);
      set_timer0(65217);
      enable_interrupts(int_timer0);
      enable_interrupts(INT_RDA);
@@ -71,23 +71,22 @@ void main(void){
     output_d(0x0);
     set_tris_a(0x00);
    set_tris_b(0x00);
+   set_tris_c(0x80);
    set_tris_d(0x00);
     
 while(1){
-  set_tris_c(0x80);
     //caracter entre separadores
-     if(flagserial == verdadero) 
+     if(flagSerial == verdadero) 
       {
          putc(CaracterRecibido);
-         flagserial = falso;
-         if(flagmostrar == verdadero && flagenter == verdadero)
+         flagSerial = falso;
+         if(flagmostrar == verdadero && flagEnter == verdadero)
          {
             flagmostrar = falso;
-            flagenter = falso;
+            flagEnter = falso;
             for (char i = 1; i < indiceBuffer-2; i++) 
-            {           
-                
-               //printf("%c",buffer[i]);
+            {
+               printf("%c",buffer[i]);
             }        
          }
       }

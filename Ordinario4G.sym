@@ -23,12 +23,23 @@
 015     @INTERRUPT_AREA
 016-017 strtok.save
 018-01B _Randseed
-01C     conteo1
-01D     conteo2
-01E     conteo3
-01F     contador100
-020     contador300
-021     contador500
+01C-039 buffer
+03A     CaracterRecibido
+03B-03C flagserial
+03D-03E flagenter
+03F-040 flagmostrar
+041-042 flagseparador
+043-044 indiceBuffer
+045     conteo1
+046     conteo2
+047     conteo3
+048     contador100
+049     contador300
+04A     contador500
+04B     MAIN.i
+04C     isr_rda.@SCRATCH1
+04D     isr_rda.@SCRATCH2
+04E     isr_rda.@SCRATCH3
 F83     PSP_DATA
 FB4.6   C1OUT
 FB4.7   C2OUT
@@ -38,20 +49,22 @@ FBC     CCP_2_HIGH
 FBE     CCP_1_LOW
 FBE     CCP_1
 FBF     CCP_1_HIGH
-FE1-FE2 @WRITE_PACKED_MEMORY.P1
-FE1-FE2 @READ_PACKED_MEMORY.P2
-FE9-FEA @WRITE_PROGRAM_MEMORY.P1
-FE9-FEA @READ_PROGRAM_MEMORY.P2
-FE9-FEA @WRITE_PACKED_MEMORY.P3
-FE9-FEA @READ_PACKED_MEMORY.P4
+FE1-FE2 @READ_PACKED_MEMORY.P1
+FE1-FE2 @WRITE_PACKED_MEMORY.P2
+FE9-FEA @READ_PACKED_MEMORY.P1
+FE9-FEA @WRITE_PACKED_MEMORY.P2
+FE9-FEA @READ_PROGRAM_MEMORY.P3
+FE9-FEA @WRITE_PROGRAM_MEMORY.P4
 FF6-FF8 @READ_PROGRAM_MEMORY.P1
 FF6-FF8 @WRITE_PROGRAM_MEMORY.P2
 
 ROM Allocation:
-000096  timer_0
-0000AA  @cinit1
-0000AA  MAIN
-0000DC  @cinit2
+0000A2  isr_rda
+000132  timer_0
+000146  @PUTCHARI_BIU_1
+000150  @cinit1
+000150  MAIN
+000186  @cinit2
 0136  StrtoulGO
 0136  StrtolGO
 
@@ -59,7 +72,7 @@ Project Directory:
     C:\Users\L-L-Z\OneDrive\Desktop\Zamora Orozco Lourdes Lizbeth\
 
 Project Files:
-    Ordinario4G.c                                           [28-jun.-19 13:08  CRC=EC37867E]
+    Ordinario4G.c                                           [28-jun.-19 13:55  CRC=155689F9]
     ..\..\..\..\..\Program Files (x86)\PICC\Devices\18F4620.h [10-sep.-13 17:34  CRC=044A57BA]
     ..\..\..\..\..\Program Files (x86)\PICC\Drivers\stdlib.h [08-jun.-11 15:39  CRC=0B6669CF]
     ..\..\..\..\..\Program Files (x86)\PICC\Drivers\stddef.h [16-jul.-10 10:27  CRC=897CEC6C]
@@ -67,7 +80,7 @@ Project Files:
     ..\..\..\..\..\Program Files (x86)\PICC\Drivers\ctype.h [03-ene.-08 14:55  CRC=2D1F019F]
     ..\..\..\..\..\Program Files (x86)\PICC\Drivers\stdio.h [31-jul.-07 14:24  CRC=4E4534F4]
 
-Source signature=72FC8C89
+Source signature=9C1B9004
 
 Units:
     Ordinario4G (main)
